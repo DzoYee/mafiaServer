@@ -1,17 +1,26 @@
-const express = require('express');
+// server.js
+
+const express = require('express')
 const app = express();
-const path = require('path');
-const bodyParser = require('body-parser');
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 app.set('port', (process.env.PORT || 3001));
 
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-app.use(bodyParser.json()); // for parsing application/json
+app.use(express.static(__dirname + '/node_modules'));
 
-app.use(express.static(path.join(__dirname, '../../node_modules')));
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/index.html');
+});
 
-const mainRoutes = require('./config/routes.js')(app);
+io.on('connection', function(client) {  
+  console.log('Client connected...');
 
-app.listen(app.get('port'), function() {
-  console.log('listening on port: ',app.get('port'));
+  client.on('join', function(data) {
+      console.log(data);
+  });
+})
+
+server.listen(app.get('port'), function() {
+  console.log('listening on port: ', app.get('port'));
 });
