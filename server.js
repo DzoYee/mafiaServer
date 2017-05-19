@@ -9,9 +9,7 @@ app.set('port', (process.env.PORT || 3001));
 
 app.use(express.static(__dirname + '/node_modules'));
 
-app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
-});
+const mainRoutes = require('./config/routes.js')(app);
 
 io.on('connection', function(client) {  
   console.log('Client connected...');
