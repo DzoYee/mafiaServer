@@ -5,19 +5,27 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
-const redis = require('redis');
-const redisClient = redis.createClient({host: 'localhost', port: 6379});
+const Redis = require('ioredis');
+const client = new Redis(6379);
 
-redisClient.on('ready', function() {
+exports.client = client;
+
+client.on('ready', function() {
   console.log("Redis is ready");
 });
 
-redisClient.on('error', function() {
+client.on('error', function() {
   console.log("Error is Redis");
 });
 
 
 app.set('port', (process.env.PORT || 3001));
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.use(express.static(__dirname + '/node_modules'));
 

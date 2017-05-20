@@ -13,6 +13,7 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "http": "0.0.0",
+    "ioredis": "^3.0.0",
     "path": "^0.12.7",
     "redis": "^2.7.1",
     "socket.io": "^2.0.1"
