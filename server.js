@@ -31,13 +31,16 @@ app.use(express.static(__dirname + '/node_modules'));
 
 const mainRoutes = require('./config/routes.js')(app);
 
-io.on('connection', function(client) {  
-  console.log('Socket Server Opened');
-  client.on('join', function(data) {
-      console.log(data);
-    console.log('Client connected...');
+io.on('connection', function(socket) {
+  console.log('Socket Server Opened By: ' + socket.id);
+
+  socket.on('action', function(action) {
+    if(action.type === 'server/hello') {
+      console.log('Got hello data!', action.data);
+      socket.emit('action', {type:'message', data:'good day!'});
+    }
   });
-})
+});
 
 server.listen(app.get('port'), function() {
   console.log('listening on port: ', app.get('port'));
