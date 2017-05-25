@@ -1,8 +1,8 @@
-const client = require('../server.js');
+const db = require('../server.js').client;
 
 module.exports = {
   hostRoom: (roomNumber) => {
-    console.log("hostingRoom");
+    
   },
   joinRoom: (roomNumber) => {
 

@@ -32,10 +32,10 @@ app.use(express.static(__dirname + '/node_modules'));
 const mainRoutes = require('./config/routes.js')(app);
 
 io.on('connection', function(client) {  
-  console.log('Client connected...');
-
+  console.log('Socket Server Opened');
   client.on('join', function(data) {
       console.log(data);
+    console.log('Client connected...');
   });
 })
 

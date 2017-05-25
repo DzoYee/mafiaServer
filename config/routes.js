@@ -2,7 +2,8 @@ const roomController = require('../controllers/roomController.js');
 
 module.exports = function(app) {
   app.route('/dog')
-    .get(function(req, res, next) {
+    .post(function(req, res, next) {
+      console.log(req.body);
       res.send({dog: "dog"});
     });
 
