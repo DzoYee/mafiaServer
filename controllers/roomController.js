@@ -3,46 +3,37 @@ const userController = require('./userController');
 
 const self = module.exports = {
   createRoom: (roomName) => {
-    db.incr('room_count')
-      .then(count => {
-        return db.hset('rooms', roomName, count)
-          .then(() => console.log('createRoom'));
-      })
+    // return new Promise((resolve, reject) => {
+    return db.incr('room_count')
+    // })
+    .then(count => {
+      return db.hset('rooms', roomName, count);
+    });
+    
   },
   hostRoom: (socket, data) => {
-    let createRoomPromise = new Promise((resolve, reject) => {
-      resolve(self.createRoom(data.roomName));
-    });
+    self.createRoom(data.roomName)
+      .then(userController.createUser(data.username))
+      .then(self.joinRoom(data.roomName, data.username));
 
-    let createUserPromise = new Promise((resolve, reject) => {
-      resolve(userController.createUser(data.username));
-    });
-
-    createRoomPromise
-      .then(() => {
-        return db.hget('rooms', data.roomName)
-      })
+  },
+  joinRoom: (roomName, username) => {
+    Promise.all([db.hget('rooms', roomName),db.hget('users', username)])
       .then(data => {
         console.log(data);
       });
-    
-
-    // Promise.all([createRoomPromise, createUserPromise])  
-      // .then(() => {
-      //   return db.hget('rooms', data.roomName)
-      // })
-      // .then(data => {
-      //   console.log(data);
-      // });
   },
-  joinRoom: (roomNumber) => {
-
+  joinRoomPromise: (roomName) => {
+    return new Promise((resolve, reject) => {
+      db.hget('rooms', roomName)
+        .then(data => {trace(data)});  
+    })
   },
-  assignPlayers: () => {
-
-  },
-  leaveRoom: () => {
-
+  joinRoomCallback: (roomName) => {
+    db.hget('rooms', roomName, (err, data) => {
+      console.log(data);
+      console.log(err);
+    })
   },
   getAllPlayers: () => {
     
