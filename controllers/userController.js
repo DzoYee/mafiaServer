@@ -2,12 +2,13 @@ const db = require('../db/redis').client;
 
 module.exports =  {
   createUser: (username) => {
-    return db.incr('users_count')
+    db.incr('users_count')
       .then(count => {
-        db.hset('users', count, username)
-      });
-    //   , (err, count) => {
-    //   db.hset('users', count, username)
-    // });
+        console.log('createUser');
+        return Promise.all([
+          db.hset('users', username, count),
+          db.hmset(`user:${count}`, 'name', username)
+        ])
+      })
   }
 };
