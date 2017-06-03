@@ -7,14 +7,12 @@ const self = module.exports = {
     .then(count => {
       return db.hset('rooms', roomName, count);
     });
-    
   },
-  hostRoom: (socket, data) => {
+  hostGame: (socket, data) => {
     self.createRoom(data.roomName)
       .then(() => { 
         return userController.createUser(data.username)
       })
-      
       .then(() => {
         self.joinRoom(data.roomName, data.username)
       });
@@ -26,7 +24,10 @@ const self = module.exports = {
       })
       .catch(err => console.log("error: ", err));
   },
-  getAllPlayers: () => {
-    
+  joinGame: (socket, data) => {
+    userController.createUser(data.username)
+      .then(() => {
+        self.joinRoom(data.roomName, data.username)
+      })
   }
 };
