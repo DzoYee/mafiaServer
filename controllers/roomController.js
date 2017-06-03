@@ -22,7 +22,7 @@ const self = module.exports = {
   joinRoom: (roomName, username) => {
     Promise.all([db.hget('rooms', roomName), db.hget('users', username)])
       .then(data => {
-        console.log(data);
+        return db.sadd(`room:${data[0]}`, data[1]);
       })
       .catch(err => console.log("error: ", err));
   },
