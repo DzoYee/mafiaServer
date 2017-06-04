@@ -18,8 +18,7 @@ const self = module.exports = {
         return self.joinRoom(data.roomName, data.username)
       })
       .then(data => {
-        console.log("hostGame: ", data);
-        socket.emit('message', {message: data});
+        socket.emit('server/room_success');
       })
   },
   joinRoom: (roomName, username) => {
