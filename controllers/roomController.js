@@ -1,5 +1,6 @@
 const db = require('../db/redis').client;
 const userController = require('./userController');
+const io = require('../socket.io/index.js');
 
 const self = module.exports = {
   createRoom: (roomName) => {
@@ -14,13 +15,22 @@ const self = module.exports = {
         return userController.createUser(data.username)
       })
       .then(() => {
-        self.joinRoom(data.roomName, data.username)
-      });
+        return self.joinRoom(data.roomName, data.username)
+      })
+      .then(data => {
+        console.log("hostGame: ", data);
+        socket.emit('message', {message: data});
+      })
   },
   joinRoom: (roomName, username) => {
-    Promise.all([db.hget('rooms', roomName), db.hget('users', username)])
+    return Promise.all([db.hget('rooms', roomName), db.hget('users', username)])
       .then(data => {
-        return db.sadd(`room:${data[0]}`, data[1]);
+        if (data[0] && data[1]) {
+          console.log("data: ", data);
+          return db.sadd(`room:${data[0]}`, data[1]);
+        } else {
+          console.log('room does not exist');
+        }
       })
       .catch(err => console.log("error: ", err));
   },
